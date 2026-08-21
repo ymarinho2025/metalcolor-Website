@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Pagamento Pix | Usee Kyle</title>
+  <title>Pagamento Pix | Metal Color</title>
   <link rel="stylesheet" href="/assets/css/store.css">
   <script src="/assets/js/payment-config.js" defer></script>
   <style>
@@ -18,7 +18,7 @@
 </head>
 <body class="status-page">
 <main class="status-card pay-card">
-  <div class="brand">USEE KYLE</div>
+  <div class="brand">Metal Color</div>
   <h1>Pagamento via Pix</h1>
   <p id="intro">Confira o pedido e faça o Pix diretamente para a loja.</p>
 
@@ -64,7 +64,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const orderId = params.get('order') || stored?.id || ('UK-' + Date.now().toString(36).toUpperCase());
 
   if (!product || !product.allowedSizes?.includes(size) || !name) {
-    document.querySelector('main').innerHTML = '<div class="brand">USEE KYLE</div><h1>Pedido inválido</h1><p>Volte ao produto e preencha os dados novamente.</p><a class="secondary-link" href="/produtos/produto1/">Voltar ao produto</a>';
+    document.querySelector('main').innerHTML = '<div class="brand">Metal Color</div><h1>Pedido inválido</h1><p>Volte ao produto e preencha os dados novamente.</p><a class="secondary-link" href="/produtos/produto1/">Voltar ao produto</a>';
     return;
   }
 
