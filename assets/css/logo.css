@@ -1,0 +1,33 @@
+body {
+    background-color: black;
+}
+
+.agendamento {
+    display: block;
+    margin: 20px auto;
+    width: 20%;
+}
+
+hr {
+    width: 75%;
+}
+
+.bg {
+    margin-bottom: 20px;
+    width: 100%;
+    height: 500px;
+    background-color: black;
+    background-image: url('/assets/images/logo.png');
+    background-position: center;
+    background-repeat: repeat;
+}
+
+@media (max-width: 530px) {
+    .bg {
+        background-size: 150%; /* diminui a imagem */
+        margin-top: -11px;
+    }
+    .agendamento {
+        width: 80%;
+    }
+}

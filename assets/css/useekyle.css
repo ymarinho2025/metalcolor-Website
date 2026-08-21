@@ -1,0 +1,74 @@
+.meio {
+    text-align: center;
+}
+
+.esquerda {
+    text-align: left;
+}
+
+.sobre {
+    text-align: center;
+    color: white;
+    font-family: serif;
+    font-weight: bolder;
+    font-size: 45px;
+}
+h2.sobre {
+    font-size: 25px;
+    font-family: monospace;
+    width: 75%;
+    margin: 0 auto;
+}
+
+img.sobre {
+    display: block;
+    margin: 0 auto;
+    width: 350px;
+}
+
+a.instagram {
+    text-decoration: none;
+    font-family: arial;
+    font-size: 55px;
+    font-weight: bolder;
+    color:  rgb(136, 16, 136);
+}
+
+a.whatsapp {
+    text-decoration: none;
+    font-family: arial;
+    font-size: 55px;
+    font-weight: bolder;
+    color:  rgb(23, 129, 8);
+}
+
+a.instagram:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 6px purple);
+}
+
+a.whatsapp:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 6px green);
+}
+
+h1.ky {
+    font-size: 200%;
+    font-family: arial;
+    width: 65%;
+    color: white;
+    margin: 0 auto;
+
+}
+
+.creator, a.creator {
+    color: white;
+    font-family: arial;
+    font-size: 15px;
+    text-align: center;
+}
+
+a.link {
+    color: yellow;
+
+}

@@ -1,0 +1,105 @@
+/* CONTATO */
+.contato {
+    color: #ffffff;
+    padding: 5px;
+    font-weight: normal;
+    font-size: 115%;
+    margin-bottom: 10px;
+    font-family: 'Roboto Condensed', sans-serif;
+    text-align: center;
+}
+
+a.contato:hover {
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+
+.numero {
+    font-size: 70%;
+}
+
+/* MENU */
+.menu {
+    text-align: center;
+    width: 100%;
+}
+
+.menu li {
+    font-family: arial;
+    font-size: 20px;
+    list-style: none;
+    display: inline-block;
+    padding: 5px;
+}
+
+.menu a {
+    border-radius: 15px;
+    background-color: #0d94d3;
+    color: #000000;
+    padding: 15px;
+    display: block;
+}
+
+.menu a:hover {
+    border-radius: 5px;
+    background-color: rgba(42, 159, 255, 0.473);
+}
+
+.btn-menu {
+    display: none;
+    background-color: #ff0095;
+    color: #000000;
+    padding: 15px 20px;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    margin: 20px auto;
+    border-radius: 5px;
+}
+
+ul {
+    padding-left: 0;
+}
+
+li {
+    list-style-position: inside;
+}
+
+a {
+    text-decoration: none;
+}
+
+@media (max-width: 547px) {
+    body{
+        transform: scale(1);
+    }
+}
+/* Esconder menu e mostrar botão abaixo de 760px */
+@media (max-width: 760px) {
+
+    .menu {
+        display: none;
+    }
+
+    .btn-menu {
+        display: block
+    }
+
+    /* ativar menu pelo JS */
+    .menu.menu-ativo {
+        display: block;
+        margin-top: 10px;
+    }
+
+    .menu li {
+    display: flex;
+}
+
+.menu a {
+    background-color: #ff0095;
+    color: #000000;
+    padding: 15px;
+    width: 100%;
+    display: block;
+}
+}
