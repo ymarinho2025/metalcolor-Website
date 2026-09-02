@@ -1,0 +1,10 @@
+Options -Indexes
+<FilesMatch "^\.(env|git)">
+  Require all denied
+</FilesMatch>
+DirectoryIndex index.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule ^ api/index.php [QSA,L]

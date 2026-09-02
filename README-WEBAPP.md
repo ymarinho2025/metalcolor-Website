@@ -1,20 +1,17 @@
-# Metal Color / Usee Kyle — Webapp
+# Metal Color WebApp v3
 
-Versão visualmente revisada do catálogo, preservando a proposta original do projeto e o fluxo Pix + WhatsApp.
+E-commerce Metal Color com checkout Asaas, split de comissão, frete por CEP, conta do cliente, painel do vendedor e acompanhamento de entrega.
 
-## Principais páginas
-- `/` — página inicial
-- `/produtos/` — categorias
-- `/produtos/tecidos/`
-- `/produtos/material-uniforme-dbv/`
-- `/produtos/material-uniforme-avt/`
-- `/produtos/todos-os-itens/` — catálogo completo com busca
-- `/produtos/produto1/?id=...` — detalhe dinâmico
-- `/pagamento/` — checkout Pix
-- `/sobre-mim/`
-- `/contato/`
+## Fluxo
 
-## Configuração do Pix
-Edite `assets/js/payment-config.js` e configure `pixKey`, `pixKeyType` e `pixReceiverName`.
+Produto → carrinho → login opcional → CEP/frete → Checkout Asaas → Webhook → pedido pago → preparação → envio → rastreio → entrega.
 
-A confirmação do pagamento é manual: o cliente paga no próprio banco e envia o comprovante pelo WhatsApp.
+## Principais áreas
+
+- `/pagamento/`: checkout, endereço e frete.
+- `/cadastro/` e `/login/`: conta do cliente/vendedor.
+- `/conta/`: carrinho salvo, compras recentes e comprar novamente.
+- `/pedido/`: pagamento, andamento, rastreio e WhatsApp.
+- `/admin/`: pedidos, clientes e atualização de envio.
+
+Consulte `SETUP.md` para configurar Asaas, banco, frete, administrador e rastreamento dos Correios. Consulte `SEGURANCA.md` para as proteções aplicadas.
