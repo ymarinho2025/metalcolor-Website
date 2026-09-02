@@ -9,22 +9,22 @@ window.addEventListener('DOMContentLoaded',()=>{
  }
  renderCart();
  // Se estiver logado, associa o pedido à conta e reaproveita dados básicos.
- fetch('/api/auth/me').then(r=>r.json()).then(d=>{if(d.user){const c=document.getElementById('login-callout');if(c)c.innerHTML=`<span>Comprando como</span><b>${esc(d.user.name)}</b> · <a href="/conta/">Minha conta</a>`; if(!$('name').value)$('name').value=d.user.name||''; if(!$('email').value)$('email').value=d.user.email||'';}}).catch(()=>{});
+ fetch('/api/auth/me').then(r=>window.METAL_API.parse(r)).then(d=>{if(d.user){const c=document.getElementById('login-callout');if(c)c.innerHTML=`<span>Comprando como</span><b>${esc(d.user.name)}</b> · <a href="/conta/">Minha conta</a>`; if(!$('name').value)$('name').value=d.user.name||''; if(!$('email').value)$('email').value=d.user.email||'';}}).catch(()=>{});
 
  async function lookupCep(){
    const cep=$('postalCode').value.replace(/\D/g,''); if(cep.length!==8)return;
    $('shipping-status').textContent='Buscando CEP...';
-   try{const r=await fetch(`https://viacep.com.br/ws/${cep}/json/`);const d=await r.json();if(d.erro)throw new Error('CEP não encontrado');
+   try{const r=await fetch(`https://viacep.com.br/ws/${cep}/json/`);const d=await window.METAL_API.parse(r);if(d.erro)throw new Error('CEP não encontrado');
      $('address').value=d.logradouro||'';$('province').value=d.bairro||'';$('cityName').value=d.localidade||'';$('cityIbge').value=d.ibge||'';$('uf').value=d.uf||'';
      $('shipping-status').textContent='CEP encontrado. Clique em calcular frete.';
-   }catch(e){$('shipping-status').textContent='Não foi possível localizar esse CEP. Você pode preencher o endereço manualmente.';}
+   }catch(e){$('cityIbge').value='';$('cityName').value='';$('uf').value='';$('shipping-status').textContent='Não foi possível localizar esse CEP. Confira o CEP antes de continuar.';}
  }
  $('postalCode').addEventListener('blur',lookupCep);
 
  $('quote-btn').onclick=async()=>{
    const cep=$('postalCode').value.replace(/\D/g,''); if(cep.length!==8){$('shipping-status').textContent='Informe um CEP válido.';return;}
    $('shipping-status').textContent='Calculando frete...'; $('shipping-options').innerHTML=''; shipping=null;
-   try{const r=await fetch('/api/shipping-quote',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({cart,cep})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Erro ao calcular frete');
+   try{const r=await fetch('/api/shipping-quote',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({cart,cep})});const d=await window.METAL_API.parse(r);if(!r.ok)throw new Error(d.error||'Erro ao calcular frete');
      $('shipping-options').innerHTML=d.options.map((x,i)=>`<label class="shipping-option"><input type="radio" name="shipping" value="${i}"><span><b>${esc(x.name)}</b><small>${x.deliveryDays?`Prazo estimado: ${x.deliveryDays} dia(s)`:''}</small></span><strong>${money(x.priceCents)}</strong></label>`).join('');
      document.querySelectorAll('input[name=shipping]').forEach(input=>input.onchange=()=>{shipping=d.options[Number(input.value)];refreshPreview();});
      $('shipping-status').textContent=d.mode==='demo'?'Frete em modo DEMO. Configure Melhor Envio antes de produção.':'Escolha uma opção de frete.';
@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
  async function refreshPreview(){
    if(!shipping)return;
-   try{const r=await fetch('/api/price-preview',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({cart,cep:$('postalCode').value.replace(/\D/g,''),shippingId:shipping.id})});const d=await r.json();if(!r.ok)throw new Error(d.error);preview=d;
+   try{const r=await fetch('/api/price-preview',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({cart,cep:$('postalCode').value.replace(/\D/g,''),shippingId:shipping.id})});const d=await window.METAL_API.parse(r);if(!r.ok)throw new Error(d.error);preview=d;
      $('subtotal').textContent=money(d.subtotalCents);$('freight').textContent=money(d.shippingCents);$('pix-total').textContent=money(d.pixTotalCents);$('card-total').textContent=money(d.cardTotalCents);$('pix-fee-note').textContent=d.pixFeeCents?`Inclui ${money(d.pixFeeCents)} de taxa Pix configurada.`:'Sem repasse adicional de taxa Pix.';
      $('card-fee-note').textContent=d.cardFeeCents?`Inclui ${money(d.cardFeeCents)} de taxa de cartão configurada.`:'Sem repasse adicional de taxa de cartão.';
    }catch(e){$('shipping-status').textContent=e.message;}
@@ -46,11 +46,11 @@ window.addEventListener('DOMContentLoaded',()=>{
  }}
  function formOk(){
    if(!shipping){$('checkout-status').textContent='Calcule e escolha o frete antes de pagar.';return false;}
-   const p=customerPayload(); if(!p.customer.name||!p.customer.cpfCnpj||!p.address.postalCode||!p.address.address||!p.address.addressNumber||!p.address.province){$('checkout-status').textContent='Preencha os dados obrigatórios do cliente e endereço.';return false;}return true;
+   const p=customerPayload(); if(!p.customer.name||!p.customer.cpfCnpj||!p.address.postalCode||!p.address.address||!p.address.addressNumber||!p.address.province||!p.address.cityIbge){$('checkout-status').textContent='Preencha os dados obrigatórios do cliente e endereço.';return false;}return true;
  }
  async function pay(method){
    if(!formOk())return; const btn=method==='PIX'?$('pay-pix'):$('pay-card'); $('pay-pix').disabled=true;$('pay-card').disabled=true; $('checkout-status').textContent='Criando checkout seguro...';
-   try{const body={...customerPayload(),paymentMethod:method};const r=await fetch('/api/create-checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Não foi possível criar o checkout.');sessionStorage.setItem('metalcolor_last_order',d.orderId);sessionStorage.setItem('metalcolor_last_order_token',d.orderAccessToken||'');location.href=d.checkoutUrl;}
+   try{const body={...customerPayload(),paymentMethod:method};const r=await fetch('/api/create-checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const d=await window.METAL_API.parse(r);if(!r.ok)throw new Error(d.error||'Não foi possível criar o checkout.');sessionStorage.setItem('metalcolor_last_order',d.orderId);sessionStorage.setItem('metalcolor_last_order_token',d.orderAccessToken||'');location.href=d.checkoutUrl;}
    catch(e){$('checkout-status').textContent=e.message;$('pay-pix').disabled=false;$('pay-card').disabled=false;}
  }
  $('pay-pix').onclick=()=>pay('PIX'); $('pay-card').onclick=()=>pay('CREDIT_CARD');
