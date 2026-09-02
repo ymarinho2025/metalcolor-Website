@@ -219,3 +219,6 @@ COOKIE_DOMAIN=
 ```
 
 O `vercel.json` encaminha apenas `/api/*` ao front controller `api/index.php`; o restante do site continua sendo entregue como arquivos estáticos.
+
+## v8 — observação de segurança
+A v8 cria também `metalcolor_sessions` para sessões revogáveis. O schema é criado automaticamente pelo backend e também está documentado em `database.sql`.

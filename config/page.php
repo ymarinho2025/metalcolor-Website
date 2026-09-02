@@ -8,15 +8,6 @@ require_once __DIR__ . '/auth.php';
  */
 function mc_page_bootstrap(string $page = ''): void
 {
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        @session_start([
-            'cookie_httponly' => true,
-            'cookie_samesite' => 'Lax',
-            'cookie_secure' => strtolower((string)(getenv('COOKIE_SECURE') ?: 'true')) !== 'false',
-            'use_strict_mode' => true,
-        ]);
-    }
-
     // Cabeçalhos defensivos também em páginas PHP, não só nas APIs.
     if (!headers_sent()) {
         header('X-Content-Type-Options: nosniff');

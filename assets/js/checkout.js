@@ -33,7 +33,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
  async function refreshPreview(){
    if(!shipping)return;
-   try{const r=await fetch('/api/price-preview',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({cart,shippingCents:shipping.priceCents})});const d=await r.json();if(!r.ok)throw new Error(d.error);preview=d;
+   try{const r=await fetch('/api/price-preview',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({cart,cep:$('postalCode').value.replace(/\D/g,''),shippingId:shipping.id})});const d=await r.json();if(!r.ok)throw new Error(d.error);preview=d;
      $('subtotal').textContent=money(d.subtotalCents);$('freight').textContent=money(d.shippingCents);$('pix-total').textContent=money(d.pixTotalCents);$('card-total').textContent=money(d.cardTotalCents);$('pix-fee-note').textContent=d.pixFeeCents?`Inclui ${money(d.pixFeeCents)} de taxa Pix configurada.`:'Sem repasse adicional de taxa Pix.';
      $('card-fee-note').textContent=d.cardFeeCents?`Inclui ${money(d.cardFeeCents)} de taxa de cartão configurada.`:'Sem repasse adicional de taxa de cartão.';
    }catch(e){$('shipping-status').textContent=e.message;}
@@ -49,9 +49,9 @@ window.addEventListener('DOMContentLoaded',()=>{
    const p=customerPayload(); if(!p.customer.name||!p.customer.cpfCnpj||!p.address.postalCode||!p.address.address||!p.address.addressNumber||!p.address.province){$('checkout-status').textContent='Preencha os dados obrigatórios do cliente e endereço.';return false;}return true;
  }
  async function pay(method){
-   if(!formOk())return; const btn=method==='PIX'?$('pay-pix'):$('pay-card'); btn.disabled=true; $('checkout-status').textContent='Criando checkout seguro...';
+   if(!formOk())return; const btn=method==='PIX'?$('pay-pix'):$('pay-card'); $('pay-pix').disabled=true;$('pay-card').disabled=true; $('checkout-status').textContent='Criando checkout seguro...';
    try{const body={...customerPayload(),paymentMethod:method};const r=await fetch('/api/create-checkout',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Não foi possível criar o checkout.');sessionStorage.setItem('metalcolor_last_order',d.orderId);sessionStorage.setItem('metalcolor_last_order_token',d.orderAccessToken||'');location.href=d.checkoutUrl;}
-   catch(e){$('checkout-status').textContent=e.message;btn.disabled=false;}
+   catch(e){$('checkout-status').textContent=e.message;$('pay-pix').disabled=false;$('pay-card').disabled=false;}
  }
  $('pay-pix').onclick=()=>pay('PIX'); $('pay-card').onclick=()=>pay('CREDIT_CARD');
 });

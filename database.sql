@@ -1,4 +1,4 @@
--- Metal Color v5 - PostgreSQL/Neon
+-- Metal Color v8 auditado - PostgreSQL/Neon
 -- O backend PHP também executa estas criações/migrações automaticamente.
 CREATE TABLE IF NOT EXISTS metalcolor_users (
  id BIGSERIAL PRIMARY KEY,
@@ -40,6 +40,16 @@ CREATE TABLE IF NOT EXISTS metalcolor_orders (
  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+
+CREATE TABLE IF NOT EXISTS metalcolor_sessions (
+ token_hash TEXT PRIMARY KEY,
+ user_id BIGINT NOT NULL REFERENCES metalcolor_users(id) ON DELETE CASCADE,
+ expires_at TIMESTAMPTZ NOT NULL,
+ revoked_at TIMESTAMPTZ,
+ created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_metal_sessions_user ON metalcolor_sessions(user_id,expires_at);
+
 CREATE TABLE IF NOT EXISTS metalcolor_saved_carts (
  user_id BIGINT PRIMARY KEY REFERENCES metalcolor_users(id) ON DELETE CASCADE,
  items JSONB NOT NULL DEFAULT '[]'::jsonb,
@@ -69,4 +79,4 @@ CREATE TABLE IF NOT EXISTS metalcolor_user_logins (
 
 CREATE INDEX IF NOT EXISTS idx_metal_orders_user ON metalcolor_orders(user_id,created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_metal_orders_status ON metalcolor_orders(status,fulfillment_status,created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_metal_checkout_id ON metalcolor_orders(checkout_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_metal_checkout_id ON metalcolor_orders(checkout_id) WHERE checkout_id IS NOT NULL;

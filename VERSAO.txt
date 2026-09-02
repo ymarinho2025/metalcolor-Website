@@ -1,0 +1,3 @@
+Metal Color v8 PHP Auditada
+Data: 02/09/2026
+Base: v7 PHP InvestigationZ
